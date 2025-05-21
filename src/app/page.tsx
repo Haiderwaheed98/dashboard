@@ -4,8 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, ArrowRight, PenTool, Trash2, Calendar, Search } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { Calendar, ArrowRight } from 'lucide-react';
 
 interface Post {
   id: number;
@@ -14,23 +13,10 @@ interface Post {
 }
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  
   const { data: posts, isLoading } = useQuery<Post[]>({
     queryKey: ['posts'],
     queryFn: () => fetch('https://jsonplaceholder.typicode.com/posts').then(res => res.json())
   });
-
-  const filteredPosts = useMemo(() => {
-    if (!posts) return [];
-    if (!searchQuery.trim()) return posts;
-    
-    const query = searchQuery.toLowerCase();
-    return posts.filter(post => 
-      post.title.toLowerCase().includes(query) || 
-      post.body.toLowerCase().includes(query)
-    );
-  }, [posts, searchQuery]);
 
   if (isLoading) {
     return (
@@ -66,31 +52,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="container mx-auto px-4 -mt-8 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-2xl mx-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search posts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-full border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-300 shadow-sm"
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Blog Posts Grid */}
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        {filteredPosts.length === 0 ? (
+        {posts?.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No posts found matching your search.</p>
+            <p className="text-gray-600 text-lg">No posts found.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
+            {posts?.map((post) => (
               <Card key={post.id} className="bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
                 <CardHeader className="space-y-4">
                   <div className="flex items-center gap-2 text-sm text-gray-500">

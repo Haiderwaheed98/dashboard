@@ -5,19 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, ArrowRight, PenTool, Trash2, Calendar, Search, Plus, Loader2 } from 'lucide-react';
+import { FileText, PenTool, Trash2, Calendar, Plus, Loader2 } from 'lucide-react';
 import { usePosts } from '@/hooks/usePosts';
 import { toast } from 'sonner';
 
 export default function AdminPage() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
   const { posts, isLoading, error, deletePost } = usePosts();
-
-  const filteredPosts = posts?.filter(post => 
-    post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.body.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
@@ -73,40 +67,24 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="container mx-auto px-4 -mt-8 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-2xl mx-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search posts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-full border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-300 shadow-sm"
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Posts Grid with Scrollable Container */}
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[400px]">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
-        ) : filteredPosts?.length === 0 ? (
+        ) : posts?.length === 0 ? (
           <div className="text-center py-12">
             <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No posts found</h3>
             <p className="text-gray-600">
-              {searchQuery ? 'Try adjusting your search query' : 'Create your first post to get started'}
+              Create your first post to get started
             </p>
           </div>
         ) : (
           <div className="max-h-[calc(100vh-300px)] overflow-y-auto custom-scrollbar pr-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts?.map((post) => (
+              {posts?.map((post) => (
                 <Card key={post.id} className="bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
                   <CardHeader className="space-y-4">
                     <div className="flex items-center gap-2 text-sm text-gray-500">
