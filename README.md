@@ -1,123 +1,71 @@
 # Next.js Blog Dashboard
 
-A modern blog dashboard built with Next.js 14, featuring a clean UI, real-time search, and full CRUD operations for blog posts.
+A modern blog dashboard built with Next.js 14, React Query, and Tailwind CSS.
 
 ## Features
 
 - 📝 Create, read, update, and delete blog posts
-- 🔍 Real-time search functionality
-- 🎨 Modern UI with smooth animations
-- 📱 Fully responsive design
-- ⚡ Fast page loads with Next.js
-- 🎯 TypeScript for better development experience
-- 🎨 Tailwind CSS for styling
-- 🔄 React Query for data fetching and caching
+- 🎨 Modern UI with Tailwind CSS
+- ⚡ Optimistic updates with React Query
+- 📱 Responsive design
+- 🎯 TypeScript support
+- 🔄 Real-time data synchronization
 
-## Prerequisites
+## Tech Stack
 
-Before you begin, ensure you have the following installed:
-- [Node.js](https://nodejs.org/) (version 18.17 or later)
-- [npm](https://www.npmjs.com/) (comes with Node.js)
-- [Git](https://git-scm.com/) (for version control)
-
-## Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Haiderwaheed98/nextjs-blog-dashboard.git
-cd nextjs-blog-dashboard
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Run the Development Server
-
-```bash
-npm run dev
-```
-
-The application will be available at [http://localhost:3000](http://localhost:3000)
-
-### 4. Build for Production
-
-```bash
-npm run build
-```
-
-### 5. Start Production Server
-
-```bash
-npm start
-```
+- **Framework:** Next.js 14
+- **Styling:** Tailwind CSS
+- **State Management:** React Query
+- **UI Components:** shadcn/ui
+- **Icons:** Lucide Icons
+- **Notifications:** Sonner
+- **Type Safety:** TypeScript
 
 ## Project Structure
 
 ```
-nextjs-blog-dashboard/
-├── src/
-│   ├── app/                    # Next.js app directory
-│   │   ├── admin/             # Admin dashboard pages
-│   │   ├── posts/             # Blog post pages
-│   │   └── page.tsx           # Home page
-│   ├── components/            # Reusable components
-│   │   ├── ui/               # UI components
-│   │   └── PostForm.tsx      # Post form component
-│   ├── hooks/                # Custom hooks
-│   │   └── usePosts.ts       # Posts management hook
-│   └── lib/                  # Utility functions and types
-├── public/                   # Static files
-├── tailwind.config.ts        # Tailwind CSS configuration
-└── package.json             # Project dependencies and scripts
+src/
+├── app/                 # Next.js app directory
+│   ├── admin/          # Admin dashboard pages
+│   ├── posts/          # Blog post pages
+│   └── page.tsx        # Home page
+├── components/         # Reusable components
+│   └── ui/            # UI components
+├── hooks/             # Custom React hooks
+├── lib/               # Utility functions and types
+└── styles/            # Global styles
 ```
 
-## Available Scripts
+## Getting Started
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/nextjs-blog-dashboard.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Development
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
-- `npm start` - Start production server
+- `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run type-check` - Run TypeScript type checking
 
-## Environment Variables
+## API
 
-Create a `.env.local` file in the root directory with the following variables:
-
-```env
-NEXT_PUBLIC_API_URL=https://jsonplaceholder.typicode.com
-```
-
-## API Integration
-
-The project uses [JSONPlaceholder](https://jsonplaceholder.typicode.com/) as a mock API for demonstration purposes. In a production environment, you would replace this with your actual API endpoint.
-
-## Technologies Used
-
-- [Next.js 14](https://nextjs.org/)
-- [React](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [React Query](https://tanstack.com/query/latest)
-- [Lucide Icons](https://lucide.dev/)
-- [Sonner](https://sonner.emilkowal.ski/) (Toast notifications)
-
-## Common Issues and Solutions
-
-1. **Port Already in Use**
-   - If port 3000 is already in use, Next.js will automatically use the next available port
-   - You can also manually specify a port: `npm run dev -- -p 3001`
-
-2. **Module Not Found Errors**
-   - Clear the Next.js cache: `rm -rf .next`
-   - Reinstall dependencies: `npm install`
-
-3. **TypeScript Errors**
-   - Run `npm run type-check` to identify type issues
-   - Ensure all dependencies are properly typed
+The project uses JSONPlaceholder API for demonstration purposes. In a production environment, you would replace this with your own backend API.
 
 ## Contributing
 

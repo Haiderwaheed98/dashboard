@@ -1,162 +1,174 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, PenTool, Trash2, Calendar, Plus, Loader2 } from 'lucide-react';
 import { usePosts } from '@/hooks/usePosts';
+import { Post } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loading } from '@/components/ui/loading';
 import { toast } from 'sonner';
+import { 
+  Plus, 
+  Edit, 
+  Trash2, 
+  BarChart3, 
+  Clock,
+  FileText,
+  Calendar,
+  ArrowRight
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminPage() {
-  const router = useRouter();
-  const { posts, isLoading, error, deletePost } = usePosts();
+  const { posts, isLoading, error, createPost, updatePost, deletePost } = usePosts();
+  const [isDeleting, setIsDeleting] = useState<number | null>(null);
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-      try {
-        await deletePost.mutateAsync(id);
-      } catch (error) {
-        toast.error('Failed to delete post');
-      }
+    try {
+      setIsDeleting(id);
+      await deletePost.mutateAsync(id);
+      toast.success('Post deleted successfully');
+    } catch (error) {
+      toast.error('Failed to delete post');
+    } finally {
+      setIsDeleting(null);
     }
   };
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
-              <p className="text-gray-600 mb-4">{error.message}</p>
-              <Button onClick={() => window.location.reload()}>
-                Try Again
-              </Button>
+  if (isLoading) return <Loading />;
+  if (error) return <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert>;
+
+  const postsList = posts as Post[];
+
+  return (
+    <div className="container mx-auto p-6 space-y-8">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Blog Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Manage your blog posts and content</p>
+        </div>
+        <Link href="/admin/posts/new">
+          <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+            <Plus className="mr-2 h-4 w-4" />
+            New Post
+          </Button>
+        </Link>
+      </div>
+
+      {/* Stats */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+            <BarChart3 className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{postsList.length}</div>
+            <p className="text-xs text-muted-foreground">Active blog posts</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Latest Post</CardTitle>
+            <Clock className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {postsList[0]?.title.slice(0, 20)}...
             </div>
+            <p className="text-xs text-muted-foreground">Most recent update</p>
           </CardContent>
         </Card>
       </div>
-    );
-  }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Header Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent"></div>
-        <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8 relative">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                Blog Dashboard
-              </h1>
-              <p className="mt-2 text-lg text-gray-600">
-                Manage your blog posts and content
-              </p>
-            </div>
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-              <Link href="/admin/posts/new" className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                Create New Post
-              </Link>
-            </Button>
+      {/* Posts Grid */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">All Posts</h2>
+          <div className="text-sm text-muted-foreground">
+            Showing {postsList.length} posts
           </div>
         </div>
-      </div>
 
-      {/* Posts Grid with Scrollable Container */}
-      <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        {isLoading ? (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : posts?.length === 0 ? (
-          <div className="text-center py-12">
-            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No posts found</h3>
-            <p className="text-gray-600">
-              Create your first post to get started
-            </p>
-          </div>
+        {postsList.length === 0 ? (
+          <Card className="p-8 text-center">
+            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium mb-2">No Posts Found</h3>
+            <p className="text-muted-foreground mb-4">Get started by creating your first blog post</p>
+            <Link href="/admin/posts/new">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Post
+              </Button>
+            </Link>
+          </Card>
         ) : (
-          <div className="max-h-[calc(100vh-300px)] overflow-y-auto custom-scrollbar pr-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts?.map((post) => (
-                <Card key={post.id} className="bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
-                  <CardHeader className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <Calendar className="h-4 w-4 text-primary" />
-                      <span>{new Date().toLocaleDateString()}</span>
-                    </div>
-                    <CardTitle className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+          <div className="max-h-[600px] overflow-y-auto pr-4 space-y-4 custom-scrollbar">
+            {postsList.map((post: Post) => (
+              <Card key={post.id} className="group hover:shadow-lg transition-all duration-200">
+                <CardHeader className="space-y-1">
+                  <div className="flex items-start justify-between">
+                    <CardTitle className="text-xl font-bold line-clamp-2">
                       {post.title}
                     </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 line-clamp-3 mb-6">
-                      {post.body}
-                    </p>
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex space-x-1">
+                      <Link href={`/admin/posts/${post.id}/edit`}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => router.push(`/admin/posts/${post.id}/edit`)}
-                        className="group-hover:bg-primary group-hover:text-white transition-colors"
-                      >
-                        <PenTool className="h-4 w-4 mr-2" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
                         onClick={() => handleDelete(post.id)}
-                        className="group-hover:bg-red-500 group-hover:text-white transition-colors"
+                        disabled={isDeleting === post.id}
                       >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                  </div>
+                  <CardDescription className="flex items-center text-sm text-muted-foreground">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {new Date().toLocaleDateString()}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground line-clamp-3 mb-4">
+                    {post.body}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <Link href={`/posts/${post.id}`}>
+                      <Button variant="ghost" className="group-hover:text-blue-600">
+                        Read More
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
       </div>
 
       <style jsx global>{`
-        .bg-grid-pattern {
-          background-image: linear-gradient(to right, #f0f0f0 1px, transparent 1px),
-            linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
-          background-size: 20px 20px;
-        }
-
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
         }
-
         .custom-scrollbar::-webkit-scrollbar-track {
           background: #f1f1f1;
           border-radius: 4px;
         }
-
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: #888;
           border-radius: 4px;
-          transition: background 0.2s ease;
         }
-
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #666;
-        }
-
-        /* For Firefox */
-        .custom-scrollbar {
-          scrollbar-width: thin;
-          scrollbar-color: #888 #f1f1f1;
+          background: #555;
         }
       `}</style>
     </div>
