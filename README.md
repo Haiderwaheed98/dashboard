@@ -1,15 +1,17 @@
 # Next.js Blog Dashboard
 
-A modern blog dashboard built with Next.js 14, React Query, and Tailwind CSS.
+A modern blog dashboard built with Next.js 14, React Query, and Tailwind CSS. This project provides a clean and intuitive interface for managing blog posts with features like creating, reading, updating, and deleting posts.
 
 ## Features
 
-- 📝 Create, read, update, and delete blog posts
+- 📝 Full CRUD operations for blog posts
 - 🎨 Modern UI with Tailwind CSS
 - ⚡ Optimistic updates with React Query
 - 📱 Responsive design
 - 🎯 TypeScript support
 - 🔄 Real-time data synchronization
+- 📊 Admin dashboard with statistics
+- 🎨 Beautiful UI components with shadcn/ui
 
 ## Tech Stack
 
@@ -41,6 +43,7 @@ src/
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/nextjs-blog-dashboard.git
+   cd nextjs-blog-dashboard
    ```
 
 2. Install dependencies:
@@ -63,7 +66,31 @@ src/
 - `npm run lint` - Run ESLint
 - `npm run type-check` - Run TypeScript type checking
 
-## API
+## Features in Detail
+
+### Admin Dashboard
+- View all blog posts in a scrollable list
+- Create new posts
+- Edit existing posts
+- Delete posts
+- View post statistics
+- Real-time updates
+
+### Blog Posts
+- Responsive grid layout
+- Featured post section
+- Post preview with excerpt
+- Read more functionality
+- Clean and modern design
+
+### UI/UX
+- Smooth animations and transitions
+- Loading states
+- Error handling
+- Toast notifications
+- Responsive design for all screen sizes
+
+## API Integration
 
 The project uses JSONPlaceholder API for demonstration purposes. In a production environment, you would replace this with your own backend API.
 
@@ -84,3 +111,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [React Query Documentation](https://tanstack.com/query/latest)
+- [shadcn/ui](https://ui.shadcn.com/)
